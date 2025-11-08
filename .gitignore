@@ -1,0 +1,26 @@
+# Output files
+/output/
+/temp_output/
+
+# Templates contents: keep folder structure but ignore actual template files
+/templates/CV/*
+!/templates/CV/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyc
+venv/
+.venv/
+env/
+ENV/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
