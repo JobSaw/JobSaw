@@ -1,0 +1,18 @@
+{
+  "section_id": "languages",
+  "title": "Languages",
+  "type": "list",
+  "schema_help": "List languages with proficiency (e.g., native, fluent, professional, intermediate, beginner).",
+  "items": [
+    {
+      "id": "lang-ro",
+      "language": "Romanian",
+      "proficiency": "Native"
+    },
+    {
+      "id": "lang-en",
+      "language": "English",
+      "proficiency": "Fluent"
+    }
+  ]
+}

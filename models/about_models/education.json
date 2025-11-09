@@ -1,0 +1,21 @@
+{
+  "section_id": "education",
+  "title": "Education",
+  "type": "events",
+  "schema_help": "List educational entries in reverse chronological order. Each item should contain an 'id' (unique short string), 'title', 'institution', 'start', 'end' (or 'present'), optional 'location', optional 'grade' (GPA), and optional 'notes' (string or array of strings).",
+  "items": [
+    {
+      "id": "uni-bsc",
+      "title": "B.Sc. Computer Science & Engineering",
+      "institution": "University Politehnica of Bucharest",
+      "start": "2024",
+      "end": "Present",
+      "location": "Bucharest, Romania",
+      "grade": "",
+      "notes": [
+        "Relevant coursework: Algorithms, OS, Databases",
+        "Thesis: <title here>"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "section_id": "work_experience",
+  "title": "Work Experience",
+  "type": "roles",
+  "schema_help": "Each role is an object with 'id', 'title', 'employer', 'start', 'end' (or 'present'), optional 'location', optional 'url', and 'highlights' (array of bullet strings). Include 'tech' (array) if you want to capture stack used for the role.",
+  "items": [
+    {
+      "id": "intern-xyz",
+      "title": "Software Engineering Intern",
+      "employer": "Example Corp",
+      "start": "2023-06",
+      "end": "2023-08",
+      "location": "Remote",
+      "url": "https://example.com",
+      "tech": ["Python", "Docker", "Postgres"],
+      "highlights": [
+        "Implemented feature X that reduced latency by 30%",
+        "Wrote integration tests and improved CI reliability"
+      ]
+    }
+  ]
+}

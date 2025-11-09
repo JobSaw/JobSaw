@@ -1,0 +1,20 @@
+{
+  "section_id": "contact",
+  "title": "Contact & Personal Info",
+  "type": "meta",
+  "schema_help": "Top-level personal information. Fill name, tagline, personal_info with email, phone, location and links (map of label->url).",
+  "meta": {
+    "name": "<Full Name>",
+    "tagline": "<Short role or tagline>",
+    "personal_info": {
+      "email": "you@example.com",
+      "phone": "+00 000 000 000",
+      "location": "City, Country",
+      "links": {
+        "linkedin": "https://linkedin.com/in/yourhandle",
+        "github": "https://github.com/yourhandle",
+        "website": "https://your.site"
+      }
+    }
+  }
+}

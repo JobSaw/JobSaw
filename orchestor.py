@@ -18,6 +18,8 @@ import sys
 from pathlib import Path
 
 from latex_module.latex_pdf_creator import generate_cv_pdf
+from scrapper_module import scrapper_script
+import argparse
 
 
 # Small utility: deep-merge a template dict with an override dict.
@@ -106,15 +108,76 @@ def run_orchestrator(model_path: str = "models/cv_model.json", output_pdf: str =
 if __name__ == "__main__":
 	# Allow optional CLI overrides: python orchestor.py [model.json] [output.pdf] [templates_dir]
 	try:
-		args = sys.argv[1:]
-		model_arg = args[0] if len(args) >= 1 else "models/cv_model.json"
-		out_arg = args[1] if len(args) >= 2 else "output/victor_cv.pdf"
-		templates_arg = args[2] if len(args) >= 3 else None
+		parser = argparse.ArgumentParser(description="Orchestrator: build CV PDF from JSON model (or test scraper)")
+		parser.add_argument("model", nargs="?", default="models/output_models/cv_model.json", help="Path to cv_model.json")
+		parser.add_argument("output", nargs="?", default="output/victor_cv.pdf", help="Output PDF path")
+		parser.add_argument("templates_dir", nargs="?", default=None, help="Optional templates directory")
+		parser.add_argument("--generate-pdf", dest="generate_pdf", action="store_true", help="If set, generate the PDF (default: do not generate). Useful to explicitly enable PDF creation.")
+		args = parser.parse_args()
+		model_arg = args.model
+		out_arg = args.output
+		templates_arg = args.templates_dir
 
 		print(f"Loading model: {model_arg}")
 		print(f"Output PDF: {out_arg}")
 		if templates_arg:
 			print(f"Using templates dir: {templates_arg}")
+
+		# Attempt to scrape job / listing links (if any).
+		# Provide a small list here; you can edit it later with the links you want.
+		# The scraper now returns in-memory dicts and does not write files.
+		link_list = [
+			# Add links here, e.g. 'https://www.linkedin.com/jobs/view/xxxxx'
+			# 'https://www.linkedin.com/jobs/collections/recommended/?currentJobId=4294694293'
+			# 'https://stagiipebune.ro/jobs/veridion/deeptech-engineer-intern-42066'
+			'https://stripe.com/jobs/listing/software-engineer-intern/7206496?gh_src=73vnei'
+		]
+
+		pages = []
+		if link_list:
+			print(f"Attempting to scrape {len(link_list)} links...")
+			try:
+				pages = scrapper_script.fetch(link_list)
+				print(f"Scraped {len(pages)} pages successfully.")
+			except Exception as e:
+				print("Scraper error:", e)
+				print("If scraping failed, please copy the page content for each link and paste it when prompted. Finish your paste with a line containing only END.")
+				for url in link_list:
+					print(f"--- Paste content for {url} (or type SKIP and press Enter to skip) ---")
+					lines = []
+					while True:
+						try:
+							line = input()
+						except EOFError:
+							break
+						if line.strip() == "END":
+							break
+						if line.strip().upper() == "SKIP":
+							lines = []
+							break
+						lines.append(line)
+					text = "\n".join(lines).strip()
+					if text:
+						obj = scrapper_script.save_manual_input(url, text)
+						pages.append(obj)
+						print(f"Recorded manual content for {url}")
+					else:
+						print("No manual content provided; skipping.")
+
+		# By default we do not create the PDF from the orchestrator to allow
+		# safe testing of the scraper. Use --generate-pdf to enable PDF creation.
+		if not args.generate_pdf:
+			print("PDF generation is disabled by default. Use --generate-pdf to enable it.")
+			print(f"Collected {len(pages)} pages:")
+			for idx, p in enumerate(pages, start=1):
+				print("--- PAGE {} ---".format(idx))
+				print(f"URL: {p.get('url')}")
+				print("--- CONTENT START ---")
+				print(p.get('text', ''))
+				print("--- CONTENT END ---\n")
+			print("Done.")
+			# exit normally
+			sys.exit(0)
 
 		# Load the template model and apply small example modifications here in the orchestrator.
 		# This demonstrates taking the canonical template at `models/cv_model.json`, overlaying

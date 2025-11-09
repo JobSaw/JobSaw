@@ -24,3 +24,7 @@ pip-delete-this-directory.txt
 # OS
 .DS_Store
 Thumbs.db
+
+# Personal user data: keep the folder but do not commit JSON files containing PII
+user_data/*.json
+!user_data/.gitkeep

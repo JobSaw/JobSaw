@@ -1,0 +1,18 @@
+{
+  "section_id": "projects",
+  "title": "Selected Projects",
+  "type": "projects",
+  "schema_help": "Each project can be a short object with 'id', 'title', 'role' (optional), 'description', 'tech' (array), 'link' (optional), and optional 'start'/'end' dates. Keep descriptions 1-2 sentences for CV use.",
+  "items": [
+    {
+      "id": "cv-generator",
+      "title": "Automated CV Generator",
+      "role": "Author",
+      "description": "JSON-driven LaTeX CV generator that renders a one-page PDF from structured data.",
+      "tech": ["Python", "LaTeX", "latexmk"],
+      "link": "https://github.com/your/repo",
+      "start": "2025-07",
+      "end": "2025-08"
+    }
+  ]
+}

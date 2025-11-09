@@ -1,0 +1,10 @@
+{
+  "section_id": "links",
+  "title": "Online Links",
+  "type": "list",
+  "schema_help": "Short list of important links (portfolio, blog, code, profiles). Each item: id, label, url.",
+  "items": [
+    {"id": "link-git", "label": "GitHub", "url": "https://github.com/yourhandle"},
+    {"id": "link-site", "label": "Website", "url": "https://your.site"}
+  ]
+}

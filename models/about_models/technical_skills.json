@@ -1,0 +1,23 @@
+{
+  "section_id": "technical_skills",
+  "title": "Technical Skills",
+  "type": "tags",
+  "schema_help": "Provide either a flat list in 'items' or structured categories (list of {category, items}). The CV generator can render tags or grouped skill lists.",
+  "items": [
+    "Python",
+    "C/C++",
+    "Linux",
+    "Git",
+    "Docker"
+  ],
+  "categories": [
+    {
+      "category": "Languages",
+      "items": ["Python", "C/C++", "Bash"]
+    },
+    {
+      "category": "Databases",
+      "items": ["Postgres", "SQLite"]
+    }
+  ]
+}

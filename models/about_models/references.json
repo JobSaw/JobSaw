@@ -1,0 +1,14 @@
+{
+  "section_id": "references",
+  "title": "References",
+  "type": "list",
+  "schema_help": "Optional references. Provide name, relation, and contact (email/phone) if you want them included or a note like 'Available upon request'.",
+  "items": [
+    {
+      "id": "ref-1",
+      "name": "Dr. Example Supervisor",
+      "relation": "Thesis Supervisor",
+      "contact": "supervisor@example.edu"
+    }
+  ]
+}
