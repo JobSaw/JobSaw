@@ -5,6 +5,7 @@
 # Templates contents: keep folder structure but ignore actual template files
 /templates/CV/*
 !/templates/CV/
+!/templates/CV/.gitkeep
 
 # Python
 __pycache__/
