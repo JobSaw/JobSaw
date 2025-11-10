@@ -1,14 +1,5 @@
 # JobSaw
 
-AI-powered CV generator. This repository contains a small LaTeX-based CV renderer that
-accepts a canonical JSON model (`models/cv_model.json`) and produces a PDF using a
-LaTeX template (`templates/CV`).
-
-## Requirements
-
-````markdown
-# JobSaw
-
 AI-powered CV generator and job-scraper harness. This repo converts a canonical
 JSON CV model into a one-page PDF using an AltaCV LaTeX template and includes a
 lightweight scraper + pipeline to extract job/page text that can be used to
@@ -122,6 +113,3 @@ python orchestor.py models/output_models/cv_model.json output/victor_cv.pdf temp
 - If you want, I can scaffold a small LangChain prototype (Tools + Agent) to
 	run LLM scoring and selection, or scaffold a lightweight in-repo agent
 	pipeline. Tell me which and I'll add the files.
-
-````
-
