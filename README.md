@@ -4,8 +4,9 @@ AI-powered CV generator and job-scraper harness.
 
 ## Job Description Analyzer
 
-A chain of three specialized Gemini-powered agents that parse raw, messy job
+A chain of three specialized LLM-powered agents that parse raw, messy job
 descriptions (e.g. copy-pasted from LinkedIn) and extract structured data.
+Runs locally via Ollama -- no API keys or cloud services required.
 
 ### Agents
 
@@ -15,19 +16,25 @@ descriptions (e.g. copy-pasted from LinkedIn) and extract structured data.
 | **Soft Skills Extractor** | Communication, leadership, teamwork, etc. |
 | **Work Scope Predictor** | Day-to-day summary, key responsibilities, projects/domains, team structure |
 
+### Prerequisites
+
+- Python 3.11+
+- [Ollama](https://ollama.com/download) installed and running
+- A pulled model:
+  ```bash
+  ollama pull qwen2.5:7b
+  ```
+
 ### Setup
 
 ```bash
 # 1. Create and activate a virtual environment
 python -m venv venv
-venv\Scripts\activate        # Windows
+venv\Scripts\activate        # Windows PowerShell
 # source venv/bin/activate   # macOS/Linux
 
 # 2. Install dependencies
 pip install -r requirements.txt
-
-# 3. Configure your API key
-#    Edit .env and set GEMINI_API_KEY=<your-key>
 ```
 
 ### Usage
@@ -45,7 +52,7 @@ cat job_posting.txt | python main.py
 ```
 main.py                      CLI entry point
 agents/
-  config.py                  .env loader + LLM factory (gemini-2.0-flash-lite)
+  config.py                  LLM factory (Ollama + qwen2.5:7b)
   models.py                  Pydantic output schemas
   prompts.py                 Prompt templates per agent
   hard_skills_agent.py       Hard skills extraction chain
@@ -56,8 +63,5 @@ agents/
 
 ### Configuration
 
-| Variable | Description | Default |
-|---|---|---|
-| `GEMINI_API_KEY` | Google AI Studio API key | *(required)* |
-
-The model used is `gemini-2.0-flash-lite` (cheapest Gemini option, free-tier compatible).
+The model is configured in `agents/config.py`. Default: `qwen2.5:7b`.
+Ollama must be running locally on `http://localhost:11434` (default).
