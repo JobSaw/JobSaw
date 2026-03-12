@@ -1,3 +1,6 @@
+# Environment secrets
+.env
+
 # Output files
 /output/
 /temp_output/

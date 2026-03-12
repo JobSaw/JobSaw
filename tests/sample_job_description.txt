@@ -1,0 +1,32 @@
+About the job
+We're looking for a Senior Full Stack Engineer to join our Platform team. You'll work closely with our product, design, and data teams to build and scale our core SaaS product used by thousands of customers worldwide.
+
+Responsibilities
+- Design, develop, and maintain scalable web applications using React and Node.js
+- Build RESTful APIs and GraphQL endpoints
+- Write clean, well-documented, and testable code
+- Collaborate with cross-functional teams in an agile environment
+- Participate in code reviews and mentor junior developers
+- Deploy and monitor applications on AWS (EC2, S3, Lambda, RDS)
+- Troubleshoot production issues and implement performance optimizations
+- Stay up to date with emerging trends and technologies
+
+Qualifications
+- 5+ years of experience in full-stack web development
+- Strong proficiency in JavaScript/TypeScript, React, Node.js
+- Experience with SQL databases (PostgreSQL preferred) and NoSQL (MongoDB)
+- Familiarity with Docker, Kubernetes, CI/CD pipelines (Jenkins or GitHub Actions)
+- Understanding of microservices architecture and event-driven design
+- Bachelor's degree in Computer Science or equivalent practical experience
+
+Nice to have
+- Experience with Python or Go
+- Knowledge of Redis, Kafka, or RabbitMQ
+- Familiarity with Terraform or Infrastructure as Code
+- Contributions to open source projects
+
+What We Offer
+- Competitive salary and equity
+- Fully remote with flexible hours
+- Learning budget
+- Great team culture, regular hackathons and team retreats
