@@ -81,10 +81,13 @@ class CvWriterAgent:
             raw = raw.split("\n", 1)[1]
             raw = raw.rsplit("```", 1)[0].strip()
 
-        # LaTeX Safety Net: Fix common LLM escaping failures
-        # Target lone '&' symbols not already escaped or part of a command.
-        # simple fix for Technical Skills sections
+        # LaTeX Safety Net: Fix common LLM escaping failures without breaking the template itself
+        # 1. Escape lone '&' symbols (prevents "Misplaced alignment tab" errors).
         raw = re.sub(r'(?<!\\)&', r'\\&', raw)
+        # 2. Escape '$' only when it immediately precedes a digit (e.g. $2M -> \$2M).
+        raw = re.sub(r'(?<!\\)\$(?=\d)', r'\\$', raw)
+        # 3. Escape '%' only when it immediately follows a digit (e.g. 100% -> 100\%).
+        raw = re.sub(r'(?<=\d)%', r'\\%', raw)
 
         logger.info("CvWriterAgent complete. Output: %d chars of LaTeX.", len(raw))
         logger.debug("Generated LaTeX (first 500 chars): %s", raw[:500])

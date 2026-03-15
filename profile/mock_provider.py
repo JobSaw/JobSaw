@@ -75,65 +75,76 @@ class MockProfileProvider(ProfileProvider):
             ],
             experience=[
                 ProfileExperience(
-                    title="Senior Software Engineer",
+                    title="Senior Software Engineer & Tech Lead",
                     company="CloudScale Inc.",
                     duration="Mar 2022 - Present",
                     description=(
-                        "Lead a team of 5 engineers building a multi-tenant SaaS "
-                        "analytics platform. Designed microservices architecture on "
-                        "AWS (ECS, Lambda, RDS). Reduced API latency by 40% through "
-                        "Redis caching and query optimization."
+                        "Spearheaded the architectural redesign and core implementation of a multi-tenant SaaS analytics platform serving over "
+                        "200 enterprise clients. Led a cross-functional squad of 5 full-stack engineers, driving adoption of Agile methodologies "
+                        "and rigorous code review standards. Designed and deployed a robust microservices architecture on AWS (utilizing ECS, "
+                        "Lambda, and RDS for scalable data storage). Architected an event-driven data ingestion pipeline using Apache Kafka "
+                        "that processes 50,000+ events per second. Reduced end-to-end API latency by 40% globally by implementing strategic "
+                        "Redis caching layers and complex SQL query optimization on high-traffic endpoints. Mentored 3 junior developers "
+                        "who have since been promoted."
                     ),
                     technologies=[
-                        "Python", "TypeScript", "React", "Node.js",
-                        "PostgreSQL", "Redis", "AWS", "Docker", "Kubernetes",
-                        "GraphQL", "GitHub Actions",
+                        "Python", "TypeScript", "React", "Node.js", "Apache Kafka", "Event-Driven Architecture",
+                        "PostgreSQL", "Redis", "AWS (ECS, Lambda, RDS, S3, CloudFront)", "Docker", "Kubernetes",
+                        "GraphQL", "GitHub Actions", "Terraform", "Datadog"
                     ],
                 ),
                 ProfileExperience(
-                    title="Software Engineer",
+                    title="Full Stack Software Engineer",
                     company="WebForge Studios",
                     duration="Jun 2019 - Feb 2022",
                     description=(
-                        "Built and maintained e-commerce platforms serving 50k+ "
-                        "daily users. Implemented payment integrations (Stripe, "
-                        "PayPal) and real-time inventory management. Migrated "
-                        "legacy monolith to microservices."
+                        "Engineered zero-downtime B2C e-commerce platforms handling 50k+ daily active users and processing $2M+ in monthly "
+                        "transactions. Single-handedly integrated complex payment gateways including Stripe, PayPal, and Apple Pay with "
+                        "strict adherence to PCI-DSS compliance. Designed a real-time inventory management subsystem using WebSockets to "
+                        "prevent race conditions during flash sales. Successfully championed the migration from a monolithic legacy Node.js "
+                        "application to a modular microservices architecture, dockerizing the environment and deploying via Jenkins pipelines."
                     ),
                     technologies=[
-                        "JavaScript", "React", "Node.js", "Express",
-                        "MongoDB", "PostgreSQL", "Docker", "Jenkins",
+                        "JavaScript", "TypeScript", "React", "Redux", "Node.js", "Express", "WebSockets",
+                        "MongoDB", "PostgreSQL", "Docker", "Jenkins", "Stripe API", "OAuth2", "Jest"
                     ],
                 ),
                 ProfileExperience(
-                    title="Junior Developer",
-                    company="StartupHub",
+                    title="Junior Backend Developer",
+                    company="StartupHub Analytics",
                     duration="Jan 2018 - May 2019",
                     description=(
-                        "Developed internal tools and dashboards using Django and "
-                        "React. Wrote unit and integration tests. Participated in "
-                        "daily standups and sprint planning."
+                        "Developed mission-critical internal business intelligence tools and dynamic data visualization dashboards "
+                        "using Django and React. Built a massive web-scraping infrastructure using Python resulting in a 200% increase "
+                        "in aggregate data volume for the ML pipeline. Wrote comprehensive unit and integration test suites, raising "
+                        "overall codebase coverage from 45% to 85%. Actively participated in daily standups and bi-weekly sprint planning."
                     ),
                     technologies=[
-                        "Python", "Django", "JavaScript", "React",
-                        "PostgreSQL", "Git",
+                        "Python", "Django", "JavaScript", "React", "BeautifulSoup", "Selenium",
+                        "PostgreSQL", "Git", "PyTest", "Linux/Bash"
                     ],
                 ),
                 ProfileExperience(
-                    title="Freelance Game Developer",
+                    title="Freelance Indie Game Developer",
                     company="Self-Employed",
                     duration="2016 - 2017",
                     description=(
-                        "Created two indie mobile games using Unity3D and C#. "
-                        "Published on Google Play with a combined 10k+ downloads. "
-                        "Handled all aspects: design, programming, and marketing."
+                        "Independently designed, programmed, and published two mobile puzzle games on the Google Play Store, achieving "
+                        "a combined total of over 10,000 organic downloads. Implemented custom 2D physics engines and complex UI systems "
+                        "using Unity3D and C#. Handled all aspects of the product lifecycle including game design, programming, "
+                        "monetization strategy (AdMob integration), and digital marketing campaigns."
                     ),
-                    technologies=["Unity3D", "C#", "Blender 3D", "Photoshop"],
+                    technologies=["Unity3D", "C#", "Blender 3D", "Photoshop", "AdMob", "Google Play Console"],
                 ),
             ],
             education=[
                 ProfileEducation(
-                    degree="B.Sc. Computer Science",
+                    degree="M.Sc. Software Engineering",
+                    institution="University of Technology",
+                    year=2019,
+                ),
+                ProfileEducation(
+                    degree="B.Sc. Computer Science (Graduated with Honors)",
                     institution="University of Technology",
                     year=2017,
                 ),
