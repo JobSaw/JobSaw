@@ -16,29 +16,72 @@ Runs locally via Ollama -- no API keys or cloud services required.
 | **Soft Skills Extractor** | Communication, leadership, teamwork, etc. |
 | **Work Scope Predictor** | Day-to-day summary, key responsibilities, projects/domains, team structure |
 
-### Prerequisites
+### Setup & Installation
 
-- Python 3.11+
-- [Ollama](https://ollama.com/download) installed and running
-- A pulled model:
-  ```bash
-  ollama pull qwen2.5:7b
-  ```
-- **LaTeX Distribution** (Required for `generate_cv.py` PDF compilation):
-  - Windows: [MiKTeX](https://miktex.org/download) or TeX Live
-  - macOS: MacTeX (`brew install mactex`)
-  - Linux: `sudo apt install texlive-full`
+1. **Python Environment**
+   Requires Python 3.11+. It is highly recommended to use a virtual environment.
+
+   **Linux/macOS:**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+   **Windows:**
+   ```cmd
+   python -m venv venv
+   venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+2. **Ollama**
+   - Install [Ollama](https://ollama.com/download) and ensure it's running.
+   - Pull the required model:
+     ```bash
+     ollama pull qwen2.5:7b
+     ```
+
+3. **LaTeX Distribution** (Required for `generate_cv.py` PDF compilation)
+   - **Windows:** We recommend installing MiKTeX. You can download the installer from [miktex.org/download](https://miktex.org/download) and run it, or install via winget in your terminal:
+     ```cmd
+     winget install -e --id MiKTeX.MiKTeX
+     ```
+     *Note 1: If you install via winget, **you must restart your terminal or IDE (like VS Code)** for the PATH changes to take effect.*
+     *Note 2: If `pdflatex` gives a "major issue" warning, open the **MiKTeX Console** application from your Windows Start menu as Administrator, click "Check for updates", and let it finish its initial setup.*
+   - **macOS:** MacTeX (`brew install mactex`)
+   - **Linux:** `sudo apt install texlive-full`
 
 ### Usage
 
+**0. First Time Setup: Environment & Requirements**
+
+**Linux/macOS:**
 ```bash
-# 1. End-To-End: Generate a Tailored PDF CV
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+**Windows:**
+```cmd
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+**1. Run the Pipeline**
+
+Make sure your virtual environment is activated before running the scripts below.
+
+```bash
+# End-To-End: Generate a Tailored PDF CV
 python generate_cv.py tests/sample_job_description.txt
 
-# 2. Extract Job Analysis Only
+# Extract Job Analysis Only
 python main.py tests/sample_job_description.txt
 
-# 3. Extract Profile Selected Data Only
+# Extract Profile Selected Data Only
 python profile_main.py tests/sample_job_description.txt
 ```
 
@@ -89,10 +132,33 @@ python retry_latex.py output/2026-03-13_15-30-00
 ```
 
 **Option 2: Recompile Existing `.tex` Only**
-If you want to manually fix the `04_tailored_cv.tex` file yourself in a text editor (or if you just installed missing MiKTeX packages), you can skip the AI entirely:
+If you want to manually fix the `04_tailored_cv.tex` file yourself in a text editor, you can skip the AI entirely:
 ```bash
 python retry_latex.py output/2026-03-13_15-30-00 --compile-only
 ```
+
+## 🛠️ Troubleshooting
+
+### `! LaTeX Error: File X.sty not found.`
+If you get an error that a `.sty` file is missing (like `sourcesanspro.sty`), it means your LaTeX distribution is missing a required font or geometry package. 
+
+Because `JobSaw` runs `pdflatex` programmatically, MiKTeX's usual "auto-install" popup cannot appear and the script fails immediately.
+
+**To fix this on Windows (MiKTeX):**
+
+**Option A (Recommended): Change MiKTeX Settings**
+Open the **MiKTeX Console** application (as Administrator), go to **Settings**, and change "Install missing packages on-the-fly" to **Always** instead of "Ask me". This permanently fixes the issue for all future missing packages!
+
+**Option B: Install all required packages manually via terminal**
+If you don't want to change the setting, you can run these commands in your terminal to install all the packages the template uses at once and update MiKTeX's file database:
+
+```cmd
+miktex packages install sourcesanspro ly1 tex-gyre tex-gyre-math fontaxes l3backend fontspec fontawesome5 enumitem titlesec xcolor hyperref geometry ulem
+initexmf --update-fndb
+```
+
+**To fix this on Linux (TeX Live):**
+Simply make sure you installed the full package: `sudo apt install texlive-full`
 
 ## 🔌 Swapping the Data Source
 

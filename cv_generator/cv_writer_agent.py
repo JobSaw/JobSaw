@@ -7,6 +7,8 @@ ready for compilation.
 """
 
 import logging
+import re
+from pathlib import Path
 
 from agents.config import get_llm
 from cv_generator.prompts import CV_WRITER_PROMPT
@@ -26,6 +28,14 @@ class CvWriterAgent:
         # Use a slightly higher temperature for more natural writing.
         self._llm = get_llm(temperature=0.3)
         self._chain = CV_WRITER_PROMPT | self._llm
+        
+        # Load LaTeX skill
+        skill_path = Path(__file__).parent.parent / "agents" / "skills" / "latex_skill.md"
+        try:
+            self._latex_skill = skill_path.read_text(encoding="utf-8")
+        except FileNotFoundError:
+            logger.warning("LaTeX skill file not found at %s", skill_path)
+            self._latex_skill = ""
 
     def generate(
         self,
@@ -57,6 +67,7 @@ class CvWriterAgent:
 
         response = self._chain.invoke(
             {
+                "latex_skill": self._latex_skill,
                 "latex_template": latex_template,
                 "profile_json": profile_json,
                 "selected_json": selected_json,
@@ -69,6 +80,11 @@ class CvWriterAgent:
         if raw.startswith("```"):
             raw = raw.split("\n", 1)[1]
             raw = raw.rsplit("```", 1)[0].strip()
+
+        # LaTeX Safety Net: Fix common LLM escaping failures
+        # Target lone '&' symbols not already escaped or part of a command.
+        # simple fix for Technical Skills sections
+        raw = re.sub(r'(?<!\\)&', r'\\&', raw)
 
         logger.info("CvWriterAgent complete. Output: %d chars of LaTeX.", len(raw))
         logger.debug("Generated LaTeX (first 500 chars): %s", raw[:500])
