@@ -56,7 +56,7 @@ CV_WRITER_PROMPT = ChatPromptTemplate.from_messages(
                 "etc. Only use valid icons defined in the template: `\\faMapMarker*`, `\\faPhone`, "
                 "`\\faEnvelope`, `\\faLinkedin`, `\\faGithub`, and `\\faGlobe`.\n\n"
                 "OUTPUT:\n"
-                "- The CV MUST fit on ONE PAGE. Be concise.\n"
+                "- The CV MUST fit on EXACTLY ONE PAGE. This is a strict constraint. Be concise.\n"
                 "- Return ONLY the complete LaTeX source code.\n"
                 "- Do NOT wrap it in markdown code fences.\n"
                 "- The first line MUST be \\documentclass and the last MUST be "
@@ -66,6 +66,7 @@ CV_WRITER_PROMPT = ChatPromptTemplate.from_messages(
         (
             "human",
             (
+                "{feedback}\n\n"
                 "LATEX TEMPLATE:\n\n{latex_template}\n\n"
                 "---\n\n"
                 "FULL PROFILE DATA:\n\n{profile_json}\n\n"

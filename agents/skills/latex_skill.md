@@ -37,3 +37,11 @@ Correct syntax:
 
 ## 6. Quotation Marks
 - In LaTeX, standard double quotes (`"`) do not render correctly as opening quotes. Use two backticks for the opening quote and two single quotes for the closing quote: ``This is quoted text''.
+
+## 7. CRITICAL: One Page Limit
+Your output MUST perfectly fit on a single page. 
+- NEVER generate a 2-page CV.
+- Try to fill the single page with relevant information, but do not exceed it. Aim for 3-4 concise bullet points per recent role.
+- **Condense information:** If you receive feedback that your output is too long, you MUST cut text. Rephrase bullet points into single, short sentences to prevent text wrapping.
+- **Delete content:** If the CV is still too long after condensing, drop the least important bullet points first. If absolutely necessary, delete the oldest experiences completely to satisfy the 1-page requirement.
+- Choose brevity over comprehensiveness. A 1-page CV is a hard requirement.

@@ -43,6 +43,7 @@ class CvWriterAgent:
         profile_json: str,
         selected_json: str,
         job_analysis_json: str,
+        feedback: str = "",
     ) -> str:
         """Invoke the LLM to produce the filled LaTeX CV.
 
@@ -51,6 +52,7 @@ class CvWriterAgent:
             profile_json: JSON string of the full ProfileData.
             selected_json: JSON string of the SelectedProfileData.
             job_analysis_json: JSON string of the JobAnalysis.
+            feedback: Optional feedback string to pass back if the CV was too long.
 
         Returns:
             Complete LaTeX source code as a string.
@@ -68,6 +70,7 @@ class CvWriterAgent:
         response = self._chain.invoke(
             {
                 "latex_skill": self._latex_skill,
+                "feedback": feedback,
                 "latex_template": latex_template,
                 "profile_json": profile_json,
                 "selected_json": selected_json,

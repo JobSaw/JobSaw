@@ -91,7 +91,7 @@ def main():
     compiler = LatexCompiler()
     logger.info("Compiling LaTeX to PDF...")
     try:
-        pdf_path = compiler.compile(tex_path, out_dir)
+        pdf_path, num_pages = compiler.compile(tex_path, out_dir)
         final_pdf_path = os.path.join(out_dir, "05_tailored_cv.pdf")
         if os.path.exists(final_pdf_path):
             os.remove(final_pdf_path)
@@ -99,7 +99,9 @@ def main():
         print("\n" + "#" * 60)
         print("  RETRY SUCCESSFUL")
         print("#" * 60)
-        print(f"\nPDF generated at: {final_pdf_path}\n")
+        print(f"\nPDF generated at: {final_pdf_path} (Pages: {num_pages})\n")
+        if num_pages > 1:
+            print(f"WARNING: The generated PDF is {num_pages} pages long. You may want to edit 04_tailored_cv.tex and run with --compile-only")
     except Exception as e:
         logger.exception("Compilation failed.")
         print("\nFailed to compile PDF. Check the logs.")

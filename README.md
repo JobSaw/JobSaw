@@ -137,6 +137,9 @@ If you want to manually fix the `04_tailored_cv.tex` file yourself in a text edi
 python retry_latex.py output/2026-03-13_15-30-00 --compile-only
 ```
 
+### Automatic 1-Page Constraint
+The `orchestrator` monitors the size of the generated PDF CV. If the CV surpasses 1 page, the orchestrator triggers an **automatic feedback loop**. It feeds a strict prompt back to the AI context to condense points, drop less relevant experiences, and retry. This happens up to a maximum of 2 retries to enforce the 1-page restriction constraint.
+
 ## 🛠️ Troubleshooting
 
 ### `! LaTeX Error: File X.sty not found.`

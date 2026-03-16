@@ -8,8 +8,10 @@ Requires MiKTeX or TeX Live installed with pdflatex on PATH.
 
 import logging
 import os
+import re
 import shutil
 import subprocess
+from typing import Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +31,7 @@ class LatexCompiler:
                 "Install MiKTeX (https://miktex.org/download) or TeX Live."
             )
 
-    def compile(self, tex_path: str, output_dir: str) -> str:
+    def compile(self, tex_path: str, output_dir: str) -> Tuple[str, int]:
         """Compile a .tex file to PDF.
 
         Args:
@@ -37,7 +39,7 @@ class LatexCompiler:
             output_dir: Directory where the PDF will be written.
 
         Returns:
-            Absolute path to the generated PDF file.
+            A tuple of (Absolute path to the generated PDF file, Number of pages).
 
         Raises:
             RuntimeError: If pdflatex is not installed or compilation fails.
@@ -64,6 +66,7 @@ class LatexCompiler:
         logger.debug("pdflatex command: %s", " ".join(cmd))
 
         # Run twice to resolve cross-references.
+        num_pages = 0
         for run_number in (1, 2):
             logger.info("pdflatex pass %d/2...", run_number)
             result = subprocess.run(
@@ -79,6 +82,16 @@ class LatexCompiler:
                     f"pdflatex failed on pass {run_number} with return code "
                     f"{result.returncode}. Check the log for details."
                 )
+            
+            if run_number == 2:
+                # Extract number of pages from standard output of the final run
+                # pdflatex hard-wraps output, so the line might be split with a newline
+                page_match = re.search(r"Output written on .*?\((\d+)\s+page", result.stdout, re.DOTALL)
+                if page_match:
+                    num_pages = int(page_match.group(1))
+                else:
+                    logger.warning("Could not determine page count from pdflatex output.")
+            
             logger.debug("pdflatex pass %d stdout (last 500 chars): %s", run_number, result.stdout[-500:])
 
         # Derive the PDF filename from the .tex filename.
@@ -97,5 +110,5 @@ class LatexCompiler:
                 os.remove(aux_file)
                 logger.debug("Cleaned up: %s", aux_file)
 
-        logger.info("PDF compiled successfully: %s", pdf_path)
-        return pdf_path
+        logger.info("PDF compiled successfully (Pages: %d): %s", num_pages, pdf_path)
+        return pdf_path, num_pages
