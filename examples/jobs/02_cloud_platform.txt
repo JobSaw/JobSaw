@@ -1,0 +1,30 @@
+FICTIONAL TEST JOB: Cloud Platform Engineer
+Company: SignalHarbor Analytics
+Location: Remote, Europe
+
+Our platform team supports a multi-tenant analytics product. Work with backend
+engineers and DevOps colleagues on reliable cloud deployments and data ingestion.
+This is a platform role without customer-facing frontend responsibilities.
+
+Responsibilities
+- Design AWS deployments using ECS, Lambda, RDS, S3, and CloudFront.
+- Package services with Docker and maintain Kubernetes workloads.
+- Manage infrastructure as code with Terraform.
+- Build CI/CD workflows with GitHub Actions and Jenkins.
+- Operate Apache Kafka ingestion and event-driven services.
+- Improve PostgreSQL performance and Redis caching.
+- Use Datadog to investigate production incidents and monitor services.
+- Automate maintenance tasks with Python and Linux/Bash.
+- Write operational documentation and mentor engineers on deployment practices.
+
+Required qualifications
+- Hands-on AWS, Docker, Kubernetes, Terraform, and CI/CD experience.
+- Strong Python, Linux/Bash, Git, and distributed-system troubleshooting skills.
+- Experience with Apache Kafka and Event-Driven Architecture.
+- Technical Writing, Team Leadership, and collaborative incident resolution.
+
+Preferred
+- AWS Certified Solutions Architect - Associate or CKAD certification.
+- High-throughput SaaS systems and measurable latency improvements.
+
+React interfaces, checkout integrations, and mobile games are outside this role.

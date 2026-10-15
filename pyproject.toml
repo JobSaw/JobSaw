@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jobsaw"
+version = "0.2.0"
+description = "Gemini-powered job analysis and tailored CV generation"
+requires-python = ">=3.11"
+dynamic = ["dependencies"]
+
+[project.scripts]
+jobsaw = "jobsaw.cli:main"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.packages.find]
+include = ["jobsaw*"]
+
+[tool.setuptools.package-data]
+jobsaw = ["resources/*.tex", "resources/*.md"]

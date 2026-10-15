@@ -1,179 +1,170 @@
 # JobSaw
 
-AI-powered CV generator and job-scraper harness.
+Analyze job descriptions, select relevant candidate facts, and generate tailored
+one-page PDF CVs with Gemini. This is a small command-line application. Scraping,
+web interfaces, and databases are outside its current scope.
 
-## Job Description Analyzer
+## Setup
 
-A chain of three specialized LLM-powered agents that parse raw, messy job
-descriptions (e.g. copy-pasted from LinkedIn) and extract structured data.
-Runs locally via Ollama -- no API keys or cloud services required.
-
-### Agents
-
-| Agent | Output |
-|---|---|
-| **Hard Skills Extractor** | Programming languages, frameworks, tools, databases, other technical skills |
-| **Soft Skills Extractor** | Communication, leadership, teamwork, etc. |
-| **Work Scope Predictor** | Day-to-day summary, key responsibilities, projects/domains, team structure |
-
-### Setup & Installation
-
-1. **Python Environment**
-   Requires Python 3.11+. It is highly recommended to use a virtual environment.
-
-   **Linux/macOS:**
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   ```
-
-   **Windows:**
-   ```cmd
-   python -m venv venv
-   venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-
-2. **Ollama**
-   - Install [Ollama](https://ollama.com/download) and ensure it's running.
-   - Pull the required model:
-     ```bash
-     ollama pull qwen2.5:7b
-     ```
-
-3. **LaTeX Distribution** (Required for `generate_cv.py` PDF compilation)
-   - **Windows:** We recommend installing MiKTeX. You can download the installer from [miktex.org/download](https://miktex.org/download) and run it, or install via winget in your terminal:
-     ```cmd
-     winget install -e --id MiKTeX.MiKTeX
-     ```
-     *Note 1: If you install via winget, **you must restart your terminal or IDE (like VS Code)** for the PATH changes to take effect.*
-     *Note 2: If `pdflatex` gives a "major issue" warning, open the **MiKTeX Console** application from your Windows Start menu as Administrator, click "Check for updates", and let it finish its initial setup.*
-   - **macOS:** MacTeX (`brew install mactex`)
-   - **Linux:** `sudo apt install texlive-full`
-
-### Usage
-
-**0. First Time Setup: Environment & Requirements**
-
-**Linux/macOS:**
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-**Windows:**
-```cmd
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-**1. Run the Pipeline**
-
-Make sure your virtual environment is activated before running the scripts below.
+Requires Python 3.11+. PDF commands also require TeX Live or MiKTeX with `pdflatex`
+on PATH and the template packages, including `sourcesanspro` and `fontawesome5`.
+Analysis and selection do not require LaTeX.
 
 ```bash
-# End-To-End: Generate a Tailored PDF CV
-python generate_cv.py tests/sample_job_description.txt
-
-# Extract Job Analysis Only
-python main.py tests/sample_job_description.txt
-
-# Extract Profile Selected Data Only
-python profile_main.py tests/sample_job_description.txt
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+cp .env.example .env
 ```
 
----
+On Windows, activate with `.venv\Scripts\activate` and copy `.env.example` to
+`.env`. Set `GEMINI_API_KEY` using a key from
+[Google AI Studio](https://aistudio.google.com/apikey).
 
-## 🏗️ Architecture
+Set `GEMINI_MODEL` explicitly; the supplied `.env.example` selects
+`gemini-3.1-flash-lite`. Google's
+[pricing page](https://ai.google.dev/gemini-api/docs/pricing) lists free input/output
+and paid text prices of $0.25/$1.50 per million input/output tokens. Older
+2.5 models can be unavailable to newly created projects despite pricing listings. Keep your Google project on the free tier for free-only
+usage; the model selection does not control billing. Free-tier content may be
+used by Google to improve its products.
 
-JobSaw is composed of three main pipelines, built modularly.
+`GEMINI_API_KEY` and `GEMINI_MODEL` are required. Settings read `.env` in the current
+working directory, with process environment variables taking precedence. Loading
+configuration does not mutate the process environment. `GEMINI_REQUEST_INTERVAL` sets seconds between
+calls (default 12). Check actual project quotas in
+[AI Studio](https://ai.google.dev/gemini-api/docs/rate-limits). Pacing does not
+prevent daily or token quotas from being exceeded. Quota failures stop the run
+with an actionable message. No automatic model switching is performed.
 
-### 1. Job Analysis Pipeline (`agents/`)
-A sequential chain of agents that reads messy job descriptions and extracts structured data.
-*   **Hard Skills Extractor:** Languages, frameworks, tools, DBs.
-*   **Soft Skills Extractor:** Interpersonal and leadership requirements.
-*   **Work Scope Predictor:** Daily responsibilities and team structure.
+## Commands
 
-### 2. Profile Extraction Pipeline (`profile/`)
-Uses the **Strategy Pattern** (`ProfileProvider`) to load a candidate's profile. An AI `SkillsSelectorAgent` then cross-references the profile against the Job Analysis to filter out irrelevant information.
+Run from the repository root:
 
-### 3. CV Generation Pipeline (`cv_generator/`)
-The final stage that produces the PDF document.
-*   **CvWriterAgent:** Takes a stripped LaTeX template (`templates/cv_template.tex`) and the filtered profile data. It intelligently rewrites experience bullet points to match the job, and injects the data into the LaTeX template using strict formatting rules.
-*   **LatexCompiler:** A programmatic wrapper around `pdflatex` that compiles the generated `.tex` file into a PDF, resolving cross-references and cleaning up auxiliary files.
+```bash
+# Three specialized Gemini extraction calls.
+python -m jobsaw analyze examples/job_description.txt
 
-## 📂 Output Structure
+# Select from an explicitly requested fictional profile.
+python -m jobsaw select examples/job_description.txt --demo
 
-Running `generate_cv.py` creates a timestamped folder under `output/`. The pipeline streams these files to disk *immediately* after each step finishes, ensuring transparency and providing checkpoints for debugging:
+# Five calls normally; at most seven with page shortening retries.
+python -m jobsaw generate examples/job_description.txt --demo
+
+# Save a profile example, edit it, then use real candidate data.
+mkdir -p user_data
+python -m jobsaw demo-profile > user_data/profile.json
+python -m jobsaw generate examples/job_description.txt --profile user_data/profile.json
+
+# Regenerate from saved JSON, without repeating extraction.
+python -m jobsaw retry output/<run-directory>
+
+# Compile corrected LaTeX without a key or Gemini call.
+python -m jobsaw compile output/<run-directory>
+```
+
+Use `-` as the job argument to read stdin. `--output PATH` on analyze/select/generate
+specifies a new run directory; existing directories are rejected to protect earlier
+runs. Personal files in `user_data/*.json` are ignored by Git.
+
+Optionally install with `python -m pip install -e .` to use `jobsaw` instead of
+`python -m jobsaw`. The old root-level scripts have been removed.
+
+## Architecture
 
 ```text
-output/2026-03-13_15-30-00/
-  run.log                    # Verbose debug logging (console only shows INFO)
-  01_profile_data.json       # The raw profile loaded from the provider
-  02_job_analysis.json       # The extracted job requirements
-  03_selected_profile.json   # The AI-filtered profile items
-  04_tailored_cv.tex         # The raw LaTeX source generated by the AI
-  05_tailored_cv.pdf         # The final compiled PDF CV
+jobsaw/
+  cli.py                    # CLI and composition root
+  config.py                 # Environment configuration
+  domain/
+    job.py                  # Job schemas
+    profile.py              # Candidate and selection schemas
+  application/
+    ports.py                # Model/provider/compiler interfaces
+    prompts.py              # Specialized task instructions
+    services.py             # Analyzer, selector, and writer
+    pipeline.py             # CV workflow and checkpoints
+  infrastructure/
+    gemini.py               # Official SDK adapter and shared pacing
+    profile_file.py         # JSON profile provider
+    mock_profile.py         # Explicit demo provider
+    latex.py                # PDF compiler adapter
+  resources/                # Packaged template and LaTeX instructions
+examples/
+tests/
 ```
 
-## 🔄 Retry Mechanism
+Dependencies flow **CLI → application → domain**. Infrastructure implements the
+application's small Protocol interfaces. The composition root creates one Gemini
+adapter and injects it into the services. Domain models do not import external
+SDKs or filesystem adapters.
 
-If the PDF compilation fails (e.g. the AI hallucinates bad LaTeX syntax), you do **not** need to re-run the entire 10-minute AI extraction pipeline. 
+Patterns used for the current workflow:
 
-You can use the `retry_latex.py` script on a failed output folder:
+- **Ports and adapters:** external systems stay behind interfaces.
+- **Dependency injection:** services receive collaborators.
+- **Strategy:** JSON and demo providers share one contract.
+- **Facade:** CvPipeline coordinates selection, generation, and recovery.
 
-**Option 1: Rerun AI & Recompile**
-This re-reads the JSON checkpoints, generates a *new* `.tex` file using the CV Writer Agent, and compiles it.
+LangChain, Ollama, unused scraping dependencies, duplicated entry points, and old
+agent rules have been removed. No framework container or event bus is needed.
+
+Each extraction requests schema-constrained JSON and validates it with Pydantic.
+Failures propagate instead of silently producing empty requirements. Selection
+checks that all returned items belong to the profile. The writer gets the full
+profile for supporting facts and contact details, plus the selected subset and
+job analysis. Missing fields must remain empty. Generated prose is not fully
+fact-checked; review the finished CV before using it.
+
+## Outputs and recovery
+
+Completed stages are saved immediately:
+
+```text
+output/<timestamp>/
+  run.log
+  01_profile_data.json
+  02_job_analysis.json
+  03_selected_profile.json
+  04_tailored_cv.tex
+  05_tailored_cv.pdf
+```
+
+Analyze saves only the analysis and log; select saves all three JSON files.
+The compiler runs twice with shell escape disabled and requires a known page
+count. Generation allows two shortening retries and accepts a final PDF only if
+it has exactly one page. Compilation errors stop immediately and leave the
+source for manual correction. Retry and compile logs append to the original log.
+
+## Tests
+
+### Compare three tailored CVs
+
+`examples/profile.json` is a large fictional profile with web development,
+cloud/platform, and Unity game-development experience. The three fictional jobs
+in `examples/jobs/` target different subsets of that same profile. The JSON file
+is an editable snapshot of the built-in demo profile.
+
 ```bash
-python retry_latex.py output/2026-03-13_15-30-00
+python -m jobsaw generate examples/jobs/01_full_stack.txt --profile examples/profile.json --output output/full_stack
+python -m jobsaw generate examples/jobs/02_cloud_platform.txt --profile examples/profile.json --output output/cloud_platform
+python -m jobsaw generate examples/jobs/03_unity_gameplay.txt --profile examples/profile.json --output output/unity_gameplay
 ```
 
-**Option 2: Recompile Existing `.tex` Only**
-If you want to manually fix the `04_tailored_cv.tex` file yourself in a text editor, you can skip the AI entirely:
+Run sequentially. Each folder contains `05_tailored_cv.pdf` and
+`03_selected_profile.json`, which explains the selection. Expect web/payment
+experience for the first role, cloud/data-ingestion experience for the second,
+and the older published-game experience for the third. Generated wording may
+vary. These commands use your configured Gemini key; they are not offline tests.
+Choose new output names when repeating a run, since existing directories are
+rejected. If LaTeX fails, correct the saved `.tex` and use `compile`, or use `retry`
+to regenerate it from checkpoints.
+
+### Offline checks
+
 ```bash
-python retry_latex.py output/2026-03-13_15-30-00 --compile-only
+python -m unittest discover -s tests -v
 ```
 
-### Automatic 1-Page Constraint
-The `orchestrator` monitors the size of the generated PDF CV. If the CV surpasses 1 page, the orchestrator triggers an **automatic feedback loop**. It feeds a strict prompt back to the AI context to condense points, drop less relevant experiences, and retry. This happens up to a maximum of 2 retries to enforce the 1-page restriction constraint.
-
-## 🛠️ Troubleshooting
-
-### `! LaTeX Error: File X.sty not found.`
-If you get an error that a `.sty` file is missing (like `sourcesanspro.sty`), it means your LaTeX distribution is missing a required font or geometry package. 
-
-Because `JobSaw` runs `pdflatex` programmatically, MiKTeX's usual "auto-install" popup cannot appear and the script fails immediately.
-
-**To fix this on Windows (MiKTeX):**
-
-**Option A (Recommended): Change MiKTeX Settings**
-Open the **MiKTeX Console** application (as Administrator), go to **Settings**, and change "Install missing packages on-the-fly" to **Always** instead of "Ask me". This permanently fixes the issue for all future missing packages!
-
-**Option B: Install all required packages manually via terminal**
-If you don't want to change the setting, you can run these commands in your terminal to install all the packages the template uses at once and update MiKTeX's file database:
-
-```cmd
-miktex packages install sourcesanspro ly1 tex-gyre tex-gyre-math fontaxes l3backend fontspec fontawesome5 enumitem titlesec xcolor hyperref geometry ulem
-initexmf --update-fndb
-```
-
-**To fix this on Linux (TeX Live):**
-Simply make sure you installed the full package: `sudo apt install texlive-full`
-
-## 🔌 Swapping the Data Source
-
-To replace the mock data with a real source, implement `ProfileProvider`:
-
-```python
-from profile.provider import ProfileProvider
-from profile.models import ProfileData
-
-class LinkedInProvider(ProfileProvider):
-    def get_profile(self) -> ProfileData:
-        # Fetch from API, scrape, etc.
-        ...
-```
-Then inject it into the orchestrator in `generate_cv.py`.
+Tests use fake models/compilers, consume no API quota, and require no LaTeX.
+Live generation requires the external services described above.
